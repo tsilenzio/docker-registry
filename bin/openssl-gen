@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -e
+
+# Generate RSA
+openssl genrsa -des3 -passout pass:x -out /etc/ssl/private/pass 2048
+openssl rsa -passin pass:x -in /etc/ssl/private/pass -out /etc/ssl/private/registry
+rm /etc/ssl/private/pass
+
+# Certificate Generation
+openssl req -new -key /etc/ssl/private/registry -out /etc/ssl/certs/csr -subj "/C=US/ST=New Jersey/CN=*.tsilenz.io"
+openssl x509 -req -days 365 -in /etc/ssl/certs/csr -signkey /etc/ssl/private/registry -out /etc/ssl/certs/registry
